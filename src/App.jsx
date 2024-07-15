@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import PrimaryLayout from '@/components/Layouts/PrimaryLayout'
 
 //import Portal pages
+import Home from './Pages/Home';
 import Dashboard from './Pages/Dashboard';
 import DefaultFiler from './Pages/DefaultFilter';
 import Enforcement from './Pages/Enforcement';
@@ -20,6 +21,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route element={<PrimaryLayout />}>
+            <Route path="/" element={<Home />} />
             <Route path="/sources" element={<DefaultFiler />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/timeline" element={<Timeline />} />
