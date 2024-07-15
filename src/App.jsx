@@ -1,0 +1,36 @@
+import './App.css'
+import { BrowserRouter ,Route, Routes } from 'react-router-dom';
+import { ThemeProvider } from "@/components/theme-provider"
+
+//Import Layouts
+import PrimaryLayout from '@/components/Layouts/PrimaryLayout'
+
+//import Portal pages
+import Dashboard from './Pages/Dashboard';
+import DefaultFiler from './Pages/DefaultFilter';
+import Enforcement from './Pages/Enforcement';
+import Insight from './Pages/Insight';
+import News from './Pages/News';
+import Timeline from './Pages/Timeline';
+
+function App() {
+
+  return (
+    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+      <BrowserRouter>
+        <Routes>
+          <Route element={<PrimaryLayout />}>
+            <Route path="/sources" element={<DefaultFiler />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/timeline" element={<Timeline />} />
+            <Route path="/enforcement" element={<Enforcement />} />
+            <Route path="/news" element={<News />} />
+            <Route path="/insights" element={<Insight />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
+  )
+}
+
+export default App
