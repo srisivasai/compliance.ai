@@ -13,6 +13,7 @@ import Enforcement from './Pages/Enforcement';
 import Insight from './Pages/Insight';
 import News from './Pages/News';
 import Timeline from './Pages/Timeline';
+import Resources from './Pages/Resources';
 
 function App() {
 
@@ -28,6 +29,7 @@ function App() {
             <Route path="/enforcement" element={<Enforcement />} />
             <Route path="/news" element={<News />} />
             <Route path="/insights" element={<Insight />} />
+            <Route path="/resources" element={<Resources />} />
           </Route>
         </Routes>
       </BrowserRouter>
