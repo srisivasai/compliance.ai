@@ -10,9 +10,9 @@ const Layout = () => {
   return (
     <div className="relative">
       <Topbar setSideBarSize = {setSideBarSize}/>
-      <div className="flex relative">
+      <div className="flex relative min-h-[calc(100vh-64px)]">
         <Sidebar sideBarSize={sideBarSize} />
-        <main className="p-5 w-full bg-muted">
+        <main className="p-5 w-full min-h-full bg-muted">
           <Outlet />
         </main>
       </div>

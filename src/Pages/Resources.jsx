@@ -44,9 +44,9 @@ const Resources = () => {
   // Others -> NBFI
 
   return (
-    <div className="bg-background rounded-md p-5 h-full">
+    <div className="bg-background rounded-md p-5 min-h-full">
       <Tabs defaultValue="resourceNavigation" className="w-full">
-        <TabsList className="grid w-full grid-cols-7">
+        <TabsList className="grid w-full grid-cols-3 md:grid-cols-4 xl:grid-cols-6">
           <TabsTrigger value="resourceNavigation">Resource Navigation</TabsTrigger>
           <TabsTrigger value="jurisdictionAnalyzer">Jurisdiction Analyzer</TabsTrigger>
           <TabsTrigger value="expertConnection">Expert Connection</TabsTrigger>
