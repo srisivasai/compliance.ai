@@ -1,10 +1,13 @@
 import React from 'react'
+import { Tabs, TabsContent, TabsList, TabsTrigger,} from "@/components/ui/tabs"
+
+import ResourceNavigation from '@/components/ResourcesComponents/ResourceNavigation'
+import JurisdictionAnalyzer from '@/components/ResourcesComponents/JurisdictionAnalyzer'
+import ExpertConnection from '@/components/ResourcesComponents/ExpertConnection'
 
 const Resources = () => {
 
-  const country = [
-    {country: 'Bangladesh'}
-  ]
+  
 
   const bankNBFI = [
     {item: 'Bank'},
@@ -41,8 +44,23 @@ const Resources = () => {
   // Others -> NBFI
 
   return (
-    <div className="bg-background rounded-md p-5">
-      Resources
+    <div className="bg-background rounded-md p-5 h-full">
+      <Tabs defaultValue="resourceNavigation" className="w-full">
+        <TabsList className="grid w-full grid-cols-7">
+          <TabsTrigger value="resourceNavigation">Resource Navigation</TabsTrigger>
+          <TabsTrigger value="jurisdictionAnalyzer">Jurisdiction Analyzer</TabsTrigger>
+          <TabsTrigger value="expertConnection">Expert Connection</TabsTrigger>
+        </TabsList>
+        <TabsContent value="resourceNavigation">
+          <ResourceNavigation />
+        </TabsContent>
+        <TabsContent value="jurisdictionAnalyzer">
+          <JurisdictionAnalyzer />
+        </TabsContent>
+        <TabsContent value="expertConnection">
+          <ExpertConnection />
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }
