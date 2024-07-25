@@ -6,11 +6,13 @@ const ResourceNavigation = () => {
 
   const [countriesList, setCountriesList] = useState([])
   const [bankNBFIList, setBankNBFIList] = useState([]);
-  const [nbfiReportDivisionList, setNbfiReportDivisionList] = useState([])
+  const [nbfiReportDivisionList, setNbfiReportDivisionList] = useState([]);
+  const [reports, setReports] = useState([]);
 
   const [selectedCountry, setSelectedCountry] = useState('');
   const [selectedBankNBFI, setSelectedBankNBFI] = useState('');
   const [selectedNbfiReportDivisionList, setSelectedNbfiReportDivisionList] = useState('');
+  const [selectedReport, setSelectedReport] = useState('');
 
   useEffect(() => {
     setBankNBFIList([]);
@@ -58,7 +60,7 @@ const ResourceNavigation = () => {
 
   }, [selectedCountry])
 
-  useEffect(()=>{
+  useEffect(() => {
     let nbfiReportDivision = [];
 
     if(selectedBankNBFI === ''){
@@ -96,6 +98,20 @@ const ResourceNavigation = () => {
     setNbfiReportDivisionList(sortedNBFIReportDivision)
 
   }, [selectedBankNBFI])
+
+  useEffect(() => {
+
+    let report = []
+
+    if(selectedNbfiReportDivisionList === ''){
+      report = []
+    } else {
+      report = [
+        {item: 'Guidelines on Risk Based Capital Adequacy', value: 'guidelinesOnRiskBasedCapitalAdequacy'},
+      ]
+    }
+    setReports(report)
+  }, [selectedNbfiReportDivisionList])
   
 
   return (
@@ -153,11 +169,32 @@ const ResourceNavigation = () => {
               </SelectContent>
             </Select>
           }
-          
 
-
+          {
+            reports[0] && 
+            <Select onValueChange={setSelectedReport}>
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Select Report" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {reports.map((item, index) => (
+                    <SelectItem key={index} value={item.value}>{item.item}</SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          }
         </div>
         
+        {
+          selectedReport &&
+          <div>
+            <h1>Items</h1>
+          </div>
+        }
+
+
       </CardContent>
 
 
