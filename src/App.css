@@ -1,0 +1,16 @@
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 0.5em; /* Adjust this value to make the scrollbar thinner */
+    height: 0.5rem;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
