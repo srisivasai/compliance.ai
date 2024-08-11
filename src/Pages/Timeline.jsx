@@ -1,13 +1,59 @@
-import React, { useState } from 'react';
-import dayjs from 'dayjs';
-import timezone from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
-import { FaCalendarAlt } from 'react-icons/fa'; // Importing a calendar icon
+import React, { useEffect, useState } from "react";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+import { FaCalendarAlt } from "react-icons/fa"; // Importing a calendar icon
 
+import * as XLSX from "xlsx";
+import { useNavigate } from "react-router-dom";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
 const Calendar = () => {
+  const [origData, setOrigData] = useState([]);
+  const [data, setData] = useState({});
+  const [countryList, setCountryList] = useState([]);
+  const [regulationList, setRegulationList] = useState([]);
+  const [divisionList, setDivisionList] = useState([]);
+  useEffect(() => {
+    const dataImport = async () => {
+      try {
+        const response = await fetch("http://localhost:5173/data.xlsx");
+        if (!response.ok) {
+          throw new Error("File not found or unable to fetch");
+        }
+        const arrayBuffer = await response.arrayBuffer();
+        const workbook = XLSX.read(arrayBuffer, { type: "array" });
+
+        // Extract data from the first sheet
+        const firstSheetName = workbook.SheetNames[0];
+        const firstSheet = workbook.Sheets[firstSheetName];
+        const sheetData = XLSX.utils.sheet_to_json(firstSheet);
+
+        // Extract unique values for lists
+        const uniqueStateRegulators = Array.from(
+          new Set(sheetData.map((row) => row["State Regulators"]))
+        );
+        const uniqueReportDivisions = Array.from(
+          new Set(sheetData.map((row) => row["Report division"]))
+        );
+
+        // Update state
+        setCountryList(workbook.SheetNames);
+        setRegulationList(uniqueStateRegulators);
+        setDivisionList(uniqueReportDivisions);
+        setOrigData([{ sheetName: firstSheetName, sheetData }]);
+        setSelectedReportDivision(uniqueReportDivisions[0]);
+        setSelectedStateRegulator(uniqueStateRegulators[0]);
+        setData({ sheetName: firstSheetName, sheetData });
+      } catch (error) {
+        console.error("Error fetching or processing the data:", error);
+      }
+    };
+
+    dataImport();
+  }, []); 
+const navigate = useNavigate()
   const currentDate = dayjs(); // Get the current date
   const currentYear = currentDate.year();
   const [selectedDate, setSelectedDate] = useState(currentDate); // Default to current date
@@ -19,9 +65,9 @@ const Calendar = () => {
   const [yearOffset, setYearOffset] = useState(0); // For navigating years
 
   // New state variables for filters
-  const [selectedCountry, setSelectedCountry] = useState('');
-  const [selectedStateRegulator, setSelectedStateRegulator] = useState('');
-  const [selectedReportDivision, setSelectedReportDivision] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedStateRegulator, setSelectedStateRegulator] = useState("");
+  const [selectedReportDivision, setSelectedReportDivision] = useState("");
 
   const handleYearChange = (year) => {
     setSelectedYear(year);
@@ -43,15 +89,31 @@ const Calendar = () => {
     setShowDatePicker(false); // Close the date picker
   };
 
-  const daysInMonth = selectedMonth !== null ? dayjs().year(selectedYear).month(selectedMonth).daysInMonth() : 0;
-  const firstDayOfMonth = selectedMonth !== null ? dayjs().year(selectedYear).month(selectedMonth).startOf('month').day() : 0;
-  const days = Array.from({ length: daysInMonth }, (_, i) => dayjs().year(selectedYear).month(selectedMonth).date(i + 1));
+  const daysInMonth =
+    selectedMonth !== null
+      ? dayjs().year(selectedYear).month(selectedMonth).daysInMonth()
+      : 0;
+  const firstDayOfMonth =
+    selectedMonth !== null
+      ? dayjs().year(selectedYear).month(selectedMonth).startOf("month").day()
+      : 0;
+  const days = Array.from({ length: daysInMonth }, (_, i) =>
+    dayjs()
+      .year(selectedYear)
+      .month(selectedMonth)
+      .date(i + 1)
+  );
 
   // Generate years for display
-  const years = Array.from({ length: 12 }, (_, i) => currentYear - 5 + yearOffset + i);
-  
+  const years = Array.from(
+    { length: 12 },
+    (_, i) => currentYear - 5 + yearOffset + i
+  );
+
   // Generate months for display
-  const months = Array.from({ length: 12 }, (_, i) => dayjs().month(i).format('MMMM'));
+  const months = Array.from({ length: 12 }, (_, i) =>
+    dayjs().month(i).format("MMMM")
+  );
 
   const toggleDatePicker = () => {
     setShowDatePicker(!showDatePicker);
@@ -73,7 +135,10 @@ const Calendar = () => {
     // Fill the calendar with the actual days
     for (let i = firstDayOfMonth; i < 7; i++) {
       if (currentDay <= totalDays) {
-        week[i] = dayjs().year(selectedYear).month(selectedMonth).date(currentDay);
+        week[i] = dayjs()
+          .year(selectedYear)
+          .month(selectedMonth)
+          .date(currentDay);
         currentDay++;
       }
     }
@@ -84,7 +149,10 @@ const Calendar = () => {
       const week = [];
       for (let i = 0; i < 7; i++) {
         if (currentDay <= totalDays) {
-          week[i] = dayjs().year(selectedYear).month(selectedMonth).date(currentDay);
+          week[i] = dayjs()
+            .year(selectedYear)
+            .month(selectedMonth)
+            .date(currentDay);
           currentDay++;
         } else {
           week[i] = null; // Empty cells
@@ -97,7 +165,23 @@ const Calendar = () => {
   };
 
   const calendar = generateCalendar();
-
+  const handleChangeCountry = (v) => {
+    setSelectedCountry(v);
+    var countryData = origData.filter(
+      ({ sheetName, sheetData }) => sheetName === v
+    );
+    setData(origData.filter(({ sheetName, sheetData }) => sheetName === v));
+    setRegulationList(
+      Array.from(
+        new Set(countryData[0].sheetData.map((row) => row["State Regulators"]))
+      )
+    );
+    setDivisionList(
+      Array.from(
+        new Set(countryData[0].sheetData.map((row) => row["Report division"]))
+      )
+    );
+  };
   return (
     <div className="p-4 relative">
       <div className="flex items-center mb-4 justify-between">
@@ -106,19 +190,24 @@ const Calendar = () => {
           className="text-lg font-bold bg-green-500 text-white p-2 rounded flex items-center"
         >
           <FaCalendarAlt className="mr-2" />
-          {selectedDate.format('MMMM D, YYYY')}
+          {selectedDate.format("MMMM D, YYYY")}
         </button>
 
         {/* Filters Section */}
         <div className="flex space-x-2">
           <select
             value={selectedCountry}
-            onChange={(e) => setSelectedCountry(e.target.value)}
+            onChange={(e) => handleChangeCountry(e.target.value)}
             className="border rounded p-2 bg-green-500 text-white"
           >
-            <option value="">Country</option>
-            <option value="USA">USA</option>
-            <option value="Canada">Canada</option>
+            {countryList.map((country) => {
+              return (
+                <option key={country} value={country}>
+                  {country}
+                </option>
+              );
+            })}
+
             {/* Add more countries as needed */}
           </select>
 
@@ -127,9 +216,13 @@ const Calendar = () => {
             onChange={(e) => setSelectedStateRegulator(e.target.value)}
             className="border rounded p-2 bg-green-500 text-white"
           >
-            <option value="">State Regulators</option>
-            <option value="Regulator1">Regulator 1</option>
-            <option value="Regulator2">Regulator 2</option>
+            {regulationList.map((reg) => {
+              return (
+                <option key={reg} value={reg}>
+                  {reg}
+                </option>
+              );
+            })}
             {/* Add more regulators as needed */}
           </select>
 
@@ -138,10 +231,13 @@ const Calendar = () => {
             onChange={(e) => setSelectedReportDivision(e.target.value)}
             className="border rounded p-2 bg-green-500 text-white"
           >
-            <option value="">Report Division</option>
-            <option value="Division1">Division 1</option>
-            <option value="Division2">Division 2</option>
-            {/* Add more divisions as needed */}
+            {divisionList.map((div) => {
+              return (
+                <option key={div} value={div}>
+                  {div}
+                </option>
+              );
+            })}
           </select>
         </div>
       </div>
@@ -211,13 +307,24 @@ const Calendar = () => {
                   <button
                     key={day.date()}
                     onClick={() => handleDateClick(day)}
-                    className={`border p-2 ${day.isSame(dayjs(), 'day') ? 'bg-blue-200' : ''} ${day.isSame(tempDate, 'day') ? 'bg-green-500 text-white' : 'hover:bg-gray-200'}`}
+                    className={`border p-2 ${
+                      day.isSame(dayjs(), "day") ? "bg-blue-200" : ""
+                    } ${
+                      day.isSame(tempDate, "day")
+                        ? "bg-green-500 text-white"
+                        : "hover:bg-gray-200"
+                    }`}
                   >
                     {day.date()}
                   </button>
                 ))}
               </div>
-              <button onClick={confirmDateChange} className="mt-4 bg-blue-500 text-white p-2 rounded">Confirm Date</button>
+              <button
+                onClick={confirmDateChange}
+                className="mt-4 bg-blue-500 text-white p-2 rounded"
+              >
+                Confirm Date
+              </button>
             </div>
           )}
         </div>
@@ -225,22 +332,99 @@ const Calendar = () => {
 
       {/* Display the full calendar based on the selected date */}
       <div className="mt-4">
-        <h2 className="font-bold mb-2">{months[selectedDate.month()]} {selectedDate.year()}</h2>
+        <h2 className="font-bold mb-2">
+          {months[selectedDate.month()]} {selectedDate.year()}
+        </h2>
         <div className="grid grid-cols-7 gap-2">
-          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-            <div key={day} className="text-center font-bold">{day}</div>
+          {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+            <div key={day} className="text-center font-bold">
+              {day}
+            </div>
           ))}
-          {calendar.map((week, weekIndex) => (
+          {calendar.map((week, weekIndex) =>
             week.map((day, dayIndex) => (
               <div
                 key={`${weekIndex}-${dayIndex}`}
-                className={`h-20 border p-2 flex items-center justify-center ${day ? (day.isSame(selectedDate, 'day') ? 'bg-green-500 text-white' : 'hover:bg-gray-200') : ''}`}
-                onClick={() => day && handleDateClick(day)}
+                className={`h-20 border p-2 flex ${
+                  day
+                    ? day.isSame(selectedDate, "day")
+                      ? "bg-green-500 text-white "
+                      : "hover:bg-gray-200 items-center justify-center"
+                    : ""
+                }`}
+                onClick={() => {
+                  if(day.isSame(selectedDate, "day"))
+                    navigate("/grid", {
+                      state: data?.sheetData?.filter(
+                        (row) =>
+                          row["State Regulators"] === selectedStateRegulator &&
+                          row["Report division"] &&
+                          selectedReportDivision &&
+                          selectedDate.year() ===
+                            dayjs("1899-12-30")
+                              .add(row["Regulatory  Date"] - 1, "day")
+                              .year() &&
+                          selectedDate.month() ===
+                            dayjs("1899-12-30")
+                              .add(row["Regulatory  Date"] - 1, "day")
+                              .month() &&
+                          selectedDate.day() ===
+                            dayjs("1899-12-30")
+                              .add(row["Regulatory  Date"] - 1, "day")
+                              .day()
+                      ),
+                    });
+                } }
               >
-                {day ? day.date() : ''}
+                {day ? (
+                  day.isSame(selectedDate, "day") ? (
+                    <>
+                      {day.date()}
+                      <div className="inherit flex w-auto flex-col text-gray-700 shadow-md w-auto rounded bg-clip-border">
+                        <nav className="flex w-auto flex-col gap-1 p-0.5 font-sans text-base font-normal text-blue-gray-700">
+                          {data?.sheetData
+                            ?.filter(
+                              (row) =>
+                                row["State Regulators"] ===
+                                  selectedStateRegulator &&
+                                row["Report division"] &&
+                                selectedReportDivision &&
+                                selectedDate.year() ===
+                                  dayjs("1899-12-30")
+                                    .add(row["Regulatory  Date"] - 1, "day")
+                                    .year() &&
+                                selectedDate.month() ===
+                                  dayjs("1899-12-30")
+                                    .add(row["Regulatory  Date"] - 1, "day")
+                                    .month() &&
+                                selectedDate.day() ===
+                                  dayjs("1899-12-30")
+                                    .add(row["Regulatory  Date"] - 1, "day")
+                                    .day()
+                            )
+                            .slice(0, 3)
+                            .map((row) => (
+                              <div
+                                key={row["Regulator"] + row["Report Name"]}
+                                className="relative grid select-none items-center whitespace-nowrap rounded-md bg-red-500 py-.5 px-1 font-sans text-xs font-bold uppercase text-white"
+                              >
+                                <span className="">
+                                  {row["Regulator"]} - {row["Report Name"]}
+                                </span>
+                              </div>
+                            ))}
+                        </nav>
+                      </div>
+                    </>
+                  ) : (
+                    day.date()
+                  )
+                ) : (
+                  ""
+                )}
               </div>
             ))
-          ))}
+          )}
         </div>
       </div>
     </div>

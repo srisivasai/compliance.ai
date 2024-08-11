@@ -15,7 +15,7 @@ import News from './Pages/News';
 import Timeline from './Pages/Timeline';
 import Resources from './Pages/Resources';
 import Reports from './Pages/Reports';
-
+import Grid from './Pages/Grid';
 function App() {
 
   return (
@@ -28,6 +28,7 @@ function App() {
             <Route path="/sources" element={<DefaultFiler />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/timeline" element={<Timeline />} />
+            <Route path="/grid" element={<Grid />} />
             <Route path="/reg-gpt" element={<RegGPT />} />
             <Route path="/news" element={<News />} />
             <Route path="/insights" element={<Insight />} />
@@ -37,7 +38,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
-  )
+  );
 }
 
 export default App
