@@ -15,6 +15,7 @@ import News from './Pages/News';
 import Timeline from './Pages/Timeline';
 import Resources from './Pages/Resources';
 import Reports from './Pages/Reports';
+import UploadFile from './Pages/UploadFile';
 
 function App() {
 
@@ -33,6 +34,7 @@ function App() {
             <Route path="/insights" element={<Insight />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/resources" element={<Resources />} />
+            <Route path="/upload-files" element={<UploadFile />} />
           </Route>
         </Routes>
       </BrowserRouter>

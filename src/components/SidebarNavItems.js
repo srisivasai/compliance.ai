@@ -1,4 +1,4 @@
-import { ListFilter, LayoutDashboard, LineChart, WrapText, Globe, PieChart, FolderOpen, Bell, Files, BookmarkCheck } from 'lucide-react'
+import { ListFilter, LayoutDashboard, LineChart, WrapText, Globe, PieChart, FolderOpen, Bell, Files, BookmarkCheck, FileUp } from 'lucide-react'
 
 export const navItems = [
     { href: '/sources', label: 'Default Filter', icon: ListFilter },
@@ -11,5 +11,5 @@ export const navItems = [
     { href: '/notifications', label: 'Notifications', icon: Bell },
     { href: '/resources', label: 'Resources', icon: Files },
     { href: '/tasks', label: 'Tasks', icon: BookmarkCheck },
-    
+    { href: '/upload-files', label: 'Upload Files', icon: FileUp },
 ]

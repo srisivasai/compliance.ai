@@ -176,6 +176,15 @@ const ResourceNavigation = () => {
     setSeeMoreTagsConcepts(!seeMoreTagsConcepts);
   };
 
+  const handleDownload = () => {
+    const link = document.createElement('a');
+    link.href = '/Risk_Based_Capital_Adequac_(Revised_Regulatory_Capital_Framework_In_Line_With_Basel_III).pdf'; // Path to the PDF file in the public directory
+    link.download = 'Risk Based Capital Adequac (Revised Regulatory Capital Framework In Line With Basel III).pdf'; // Name of the file to be downloaded
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const reportSections = [
     {
       heading: 'An Overview of Basel III',
@@ -574,8 +583,7 @@ const ResourceNavigation = () => {
       ]
     }
   ];
-    
-  
+
   return (
     <Card>
       <CardHeader>
@@ -730,7 +738,7 @@ const ResourceNavigation = () => {
                         <h1 className="font-semibold text-lg">Guidelines on Risk Based Capital Adequacy</h1>
                       </div>
                       <div className="w-full flex justify-center gap-3">
-                        <Button className={cn('text-white')}>View PDF</Button>
+                        <Button className={cn('text-white')} onClick={handleDownload}>View PDF</Button>
                         <Button variant="outline" className={cn('')}>View Source Website</Button>
                       </div>
                       <div className="space-y-1">
