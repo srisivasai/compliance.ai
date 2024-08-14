@@ -37,12 +37,18 @@ const Calendar = () => {
         const uniqueReportDivisions = Array.from(
           new Set(sheetData.map((row) => row["Report division"]))
         );
-
+const wholeData = workbook.SheetNames.map((name)=>{
+  const sheet = workbook.Sheets[name];
+  const sheetData = XLSX.utils.sheet_to_json(sheet);
+  return {
+    sheetName:name,sheetData
+  }
+})
         // Update state
         setCountryList(workbook.SheetNames);
         setRegulationList(uniqueStateRegulators);
         setDivisionList(uniqueReportDivisions);
-        setOrigData([{ sheetName: firstSheetName, sheetData }]);
+        setOrigData(wholeData);
         setSelectedReportDivision(uniqueReportDivisions[0]);
         setSelectedStateRegulator(uniqueStateRegulators[0]);
         setData({ sheetName: firstSheetName, sheetData });
@@ -298,7 +304,7 @@ const navigate = useNavigate()
           )}
           {step === 2 && selectedMonth !== null && (
             <div className="mb-4">
-              <h2 className="font-bold">Select Day</h2>
+              <h2 className="font-bold color-black">Select Day</h2>
               <div className="grid grid-cols-7 gap-2">
                 {Array.from({ length: firstDayOfMonth }).map((_, index) => (
                   <div key={index} className="border p-2"></div> // Empty cells for days before the first of the month
@@ -307,12 +313,12 @@ const navigate = useNavigate()
                   <button
                     key={day.date()}
                     onClick={() => handleDateClick(day)}
-                    className={`border p-2 ${
+                    className={`border p-2 border rounded bg-green-500 text-white hover:bg-green-600 transition duration-200${
                       day.isSame(dayjs(), "day") ? "bg-blue-200" : ""
                     } ${
                       day.isSame(tempDate, "day")
-                        ? "bg-green-500 text-white"
-                        : "hover:bg-gray-200"
+                        ? "rounded bg-green-500 text-white"
+                        : "hover:bg-red-200"
                     }`}
                   >
                     {day.date()}
@@ -321,7 +327,7 @@ const navigate = useNavigate()
               </div>
               <button
                 onClick={confirmDateChange}
-                className="mt-4 bg-blue-500 text-white p-2 rounded"
+                className="mt-4 bg-green-500 text-white hover:bg-green-600 transition duration-200"
               >
                 Confirm Date
               </button>
@@ -360,26 +366,43 @@ const navigate = useNavigate()
                           row["State Regulators"] === selectedStateRegulator &&
                           row["Report division"] &&
                           selectedReportDivision &&
-                          selectedDate.year() ===
-                            dayjs("1899-12-30")
-                              .add(row["Regulatory  Date"] - 1, "day")
-                              .year() &&
+                          
                           selectedDate.month() ===
                             dayjs("1899-12-30")
                               .add(row["Regulatory  Date"] - 1, "day")
                               .month() &&
-                          selectedDate.day() ===
+                          selectedDate.date() ===
                             dayjs("1899-12-30")
                               .add(row["Regulatory  Date"] - 1, "day")
-                              .day()
+                              .date()
                       ),
                     });
                 } }
               >
-                {day ? (
-                  day.isSame(selectedDate, "day") ? (
+                {day ? ((
+                   selectedDate.month() ===
+                   day.month()&&
+                 selectedDate.date() ===
+                   
+                    
+                     day.date())? (
+                      
+                    
                     <>
                       {day.date()}
+                      {console.log(data?.sheetData
+                            ?.filter(
+                              (row) =>
+                                row["State Regulators"] ===
+                                  selectedStateRegulator &&
+                                row["Report division"] ===
+                                selectedReportDivision &&
+
+                              selectedDate.format("DD/MM")==
+                              row["Regulatory Date"]
+        
+                               
+                            ),selectedDate.format("DD/MM"))}
                       <div className="inherit flex w-auto flex-col text-gray-700 shadow-md w-auto rounded bg-clip-border">
                         <nav className="flex w-auto flex-col gap-1 p-0.5 font-sans text-base font-normal text-blue-gray-700">
                           {data?.sheetData
@@ -387,20 +410,17 @@ const navigate = useNavigate()
                               (row) =>
                                 row["State Regulators"] ===
                                   selectedStateRegulator &&
-                                row["Report division"] &&
+                                row["Report division"] ===
                                 selectedReportDivision &&
-                                selectedDate.year() ===
-                                  dayjs("1899-12-30")
-                                    .add(row["Regulatory  Date"] - 1, "day")
-                                    .year() &&
-                                selectedDate.month() ===
+        
+                                day.month() ===
                                   dayjs("1899-12-30")
                                     .add(row["Regulatory  Date"] - 1, "day")
                                     .month() &&
-                                selectedDate.day() ===
+                                day.date() ===
                                   dayjs("1899-12-30")
                                     .add(row["Regulatory  Date"] - 1, "day")
-                                    .day()
+                                    .date()
                             )
                             .slice(0, 3)
                             .map((row) => (
