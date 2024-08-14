@@ -37,13 +37,14 @@ const Calendar = () => {
         const uniqueReportDivisions = Array.from(
           new Set(sheetData.map((row) => row["Report division"]))
         );
-const wholeData = workbook.SheetNames.map((name)=>{
-  const sheet = workbook.Sheets[name];
-  const sheetData = XLSX.utils.sheet_to_json(sheet);
-  return {
-    sheetName:name,sheetData
-  }
-})
+        const wholeData = workbook.SheetNames.map((name) => {
+          const sheet = workbook.Sheets[name];
+          const sheetData = XLSX.utils.sheet_to_json(sheet);
+          return {
+            sheetName: name,
+            sheetData,
+          };
+        });
         // Update state
         setCountryList(workbook.SheetNames);
         setRegulationList(uniqueStateRegulators);
@@ -58,8 +59,8 @@ const wholeData = workbook.SheetNames.map((name)=>{
     };
 
     dataImport();
-  }, []); 
-const navigate = useNavigate()
+  }, []);
+  const navigate = useNavigate();
   const currentDate = dayjs(); // Get the current date
   const currentYear = currentDate.year();
   const [selectedDate, setSelectedDate] = useState(currentDate); // Default to current date
@@ -359,50 +360,25 @@ const navigate = useNavigate()
                     : ""
                 }`}
                 onClick={() => {
-                  if(day.isSame(selectedDate, "day"))
+                  if (day.isSame(selectedDate, "day"))
                     navigate("/grid", {
                       state: data?.sheetData?.filter(
                         (row) =>
                           row["State Regulators"] === selectedStateRegulator &&
                           row["Report division"] &&
                           selectedReportDivision &&
-                          
-                          selectedDate.month() ===
-                            dayjs("1899-12-30")
-                              .add(row["Regulatory  Date"] - 1, "day")
-                              .month() &&
-                          selectedDate.date() ===
-                            dayjs("1899-12-30")
-                              .add(row["Regulatory  Date"] - 1, "day")
-                              .date()
+                          row["Regulatory  Date"] ===
+                            selectedDate.format("DD/MM")
                       ),
                     });
-                } }
+                }}
               >
-                {day ? ((
-                   selectedDate.month() ===
-                   day.month()&&
-                 selectedDate.date() ===
-                   
-                    
-                     day.date())? (
-                      
-                    
+                {day ? (
+                  selectedDate.month() === day.month() &&
+                  selectedDate.date() === day.date() ? (
                     <>
                       {day.date()}
-                      {console.log(data?.sheetData
-                            ?.filter(
-                              (row) =>
-                                row["State Regulators"] ===
-                                  selectedStateRegulator &&
-                                row["Report division"] ===
-                                selectedReportDivision &&
-
-                              selectedDate.format("DD/MM")==
-                              row["Regulatory Date"]
-        
-                               
-                            ),selectedDate.format("DD/MM"))}
+                      
                       <div className="inherit flex w-auto flex-col text-gray-700 shadow-md w-auto rounded bg-clip-border">
                         <nav className="flex w-auto flex-col gap-1 p-0.5 font-sans text-base font-normal text-blue-gray-700">
                           {data?.sheetData
@@ -411,16 +387,9 @@ const navigate = useNavigate()
                                 row["State Regulators"] ===
                                   selectedStateRegulator &&
                                 row["Report division"] ===
-                                selectedReportDivision &&
-        
-                                day.month() ===
-                                  dayjs("1899-12-30")
-                                    .add(row["Regulatory  Date"] - 1, "day")
-                                    .month() &&
-                                day.date() ===
-                                  dayjs("1899-12-30")
-                                    .add(row["Regulatory  Date"] - 1, "day")
-                                    .date()
+                                  selectedReportDivision &&
+                                row["Regulatory  Date"] ===
+                                  selectedDate.format("DD/MM")
                             )
                             .slice(0, 3)
                             .map((row) => (
