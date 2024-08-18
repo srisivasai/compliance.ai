@@ -4,7 +4,7 @@ import { navItems } from '../SidebarNavItems';
 
 const Sidebar = ({ sideBarSize }) => {
   return (
-    <div className={`hidden md:block z-50 sticky top-16 h-[calc(100vh-64px)] bg-background transition-all overflow-y-scroll no-scrollbar ${sideBarSize === "large" ? ' w-72 px-5' : 'w-20'}`}>
+    <div className={`flex-shrink-0 hidden md:block z-50 sticky top-16 h-[calc(100vh-64px)] bg-background transition-all overflow-y-scroll no-scrollbar ${sideBarSize === "large" ? ' w-64 px-5' : 'w-20'}`}>
       <ul className={`space-y-2 ${sideBarSize === "large" ? 'mt-2' : ''}`}>
         {navItems.map((item) => (
           <li key={item.href}>

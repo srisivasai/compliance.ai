@@ -63,7 +63,7 @@ const Topbar = ({setSideBarSize}) => {
             </div>
 
             <div className="hidden md:flex items-center w-full max-w-md space-x-2">
-                <Input type="search" placeholder="Search" className="w-full border-0 h-8 font-semibold bg-primary-foreground" />
+                <Input type="search" placeholder="Search" className="w-full border-0 h-8 font-semibold bg-muted" />
                 <Button variant="ghost" size="icon"><SearchIcon className="h-4 w-4" /></Button>
             </div>
             
