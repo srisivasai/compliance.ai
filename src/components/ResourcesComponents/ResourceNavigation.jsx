@@ -746,7 +746,7 @@ const ResourceNavigation = () => {
                         <p>
                           {isReadMore ? summary : `${summary.substring(0, 200)}...`}
                           <span
-                            className="text-blue-500 cursor-pointer"
+                            className="text-primary cursor-pointer"
                             onClick={toggleReadMore}
                           >
                             {isReadMore ? " Read Less" : " Read More"}
@@ -831,7 +831,7 @@ const ResourceNavigation = () => {
                           }
                           {concepts.length > 3 && !seeMoreTagsConcepts && (
                             <span
-                              className="text-blue-500 text-sm cursor-pointer"
+                              className="text-primary text-sm cursor-pointer"
                               onClick={toggleSeeMoreConcepts}
                             >
                               +{concepts.length - 3} more
@@ -839,7 +839,7 @@ const ResourceNavigation = () => {
                           )}
                           {seeMoreTagsConcepts && (
                             <span
-                              className="text-blue-500 text-sm cursor-pointer"
+                              className="text-primary text-sm cursor-pointer"
                               onClick={toggleSeeMoreConcepts}
                             >
                               Show Less
